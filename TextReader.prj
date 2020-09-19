@@ -6,7 +6,7 @@
 <y0>0</y0>
 <width>200</width>
 <height>100</height>
-<ID_maker>9</ID_maker>
+<ID_maker>13</ID_maker>
 <objectname>TextReader</objectname>
 <description>新規のアプリケーション</description>
 <プロパティ>
@@ -176,13 +176,26 @@ import android.view.View.OnClickListener;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.content.Intent;
+import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
 
 public class HelloWorld extends Activity {
+  %AppName% ap;
+
   public void onCreate(Bundle bundle) {
     super.onCreate(bundle);
-    %AppName% ap = new %AppName%();
+    ap = new %AppName%();
     ap.ACTIVITY = this;
     ap.Start();
+  }
+
+  public void onStop(){
+    super.onStop();
+    try{
+      BufferedWriter dd = new BufferedWriter(new FileWriter( new File( ap.home, &quot;data.txt&quot; ) ) );
+      dd.write( ap.edit.getSelectionStart()+&quot;\n&quot; );
+      dd.close();
+    } catch(Exception e ){}
   }
 }
 </ImportFiles4>
@@ -311,9 +324,14 @@ int main( int argc, char** argv ){
 <ID>_C2</ID>
 <x0>112</x0>
 <y0>7</y0>
-<width>142</width>
-<height>22</height>
-<codetext>EditText edit;</codetext>
+<width>171</width>
+<height>80</height>
+<codetext>EditText edit = null;
+int index = 0;
+int len = 0;
+File home = null;
+SeekBar seek = null;
+</codetext>
 </codeclip>
 <operation>
 <ID>_O3</ID>
@@ -374,6 +392,13 @@ int main( int argc, char** argv ){
 <codetext>// read and set text
 
 
+index = 0;
+home = ACTIVITY.getFilesDir();
+try{
+  BufferedReader dd = new BufferedReader(new FileReader( new File(home, &quot;data.txt&quot;) ) );
+  index = Integer.parseInt(dd.readLine());
+  dd.close();
+} catch(Exception e ){ edit.setText(&quot;can not open init file\n&quot;); }
 
   String fname = null, line = null;
   Intent intent = ACTIVITY.getIntent();
@@ -388,7 +413,9 @@ int main( int argc, char** argv ){
           edit.append(&quot;\n&quot;);
         }
         din.close();
-        edit.setSelection(0);
+        edit.setSelection(index);
+        len =  ((SpannableStringBuilder)edit.getText()).toString().length();
+        if( len &gt; 0 ) seek.setProgress(10000 * index / len );
       } catch(Exception e ){ edit.setText(&quot;can not open &quot;+ fname+&quot;\n&quot;); }
     }
   }
@@ -402,7 +429,9 @@ int main( int argc, char** argv ){
         edit.append(&quot;\n&quot;);
       }
       din.close();
-      edit.setSelection(0);
+      edit.setSelection(index);
+      len =  ((SpannableStringBuilder)edit.getText()).toString().length();
+      if( len &gt; 0 ) seek.setProgress(10000 * index / len );
     } catch(Exception e ){ edit.setText( e+&quot;\n&quot;); }
   }
   
@@ -417,17 +446,17 @@ int main( int argc, char** argv ){
 <ID>_O7</ID>
 <state1>_SINIT</state1>
 <state2>_SINIT</state2>
-<x0>459</x0>
-<y0>169</y0>
-<width>138</width>
-<height>48</height>
+<x0>458</x0>
+<y0>159</y0>
+<width>201</width>
+<height>58</height>
 <inconnectx0>0</inconnectx0>
 <inconnecty0>40</inconnecty0>
 <outconnectx0>0</outconnectx0>
 <outconnecty0>40</outconnecty0>
 <inpintext>in()</inpintext>
 <inpinx0>0</inpinx0>
-<inpiny0>27</inpiny0>
+<inpiny0>41</inpiny0>
 <inpinwidth>40</inpinwidth>
 <inpinheight>20</inpinheight>
 <outpintext>out()</outpintext>
@@ -437,7 +466,8 @@ int main( int argc, char** argv ){
 <outpinheight>20</outpinheight>
 <inpinlinkcount>1</inpinlinkcount>
 <description></description>
-<codetext>ACTIVITY.finish();
+<codetext>edit.setSelection( index=0 );
+ACTIVITY.finish();
 </codetext>
 </operation>
 <relation>
@@ -445,10 +475,44 @@ int main( int argc, char** argv ){
 <pin1name>_A0(_PABUTTON1)</pin1name>
 <pin2name>_O7</pin2name>
 </relation>
+<operation>
+<ID>_O9</ID>
+<state1>_SINIT</state1>
+<state2>_SINIT</state2>
+<x0>449</x0>
+<y0>298</y0>
+<width>392</width>
+<height>79</height>
+<inconnectx0>0</inconnectx0>
+<inconnecty0>40</inconnecty0>
+<outconnectx0>0</outconnectx0>
+<outconnecty0>40</outconnecty0>
+<inpintext>in(int i)</inpintext>
+<inpinx0>0</inpinx0>
+<inpiny0>60</inpiny0>
+<inpinwidth>55</inpinwidth>
+<inpinheight>19</inpinheight>
+<outpintext>out()</outpintext>
+<outpinx0>90</outpinx0>
+<outpiny0>40</outpiny0>
+<outpinwidth>40</outpinwidth>
+<outpinheight>20</outpinheight>
+<inpinlinkcount>1</inpinlinkcount>
+<description></description>
+<codetext>String s= ((SpannableStringBuilder)edit.getText()).toString();
+len = s.length();
+edit.setSelection( index=( i * len /10000 ) );
+</codetext>
+</operation>
+<relation>
+<ID>_R10</ID>
+<pin1name>_A0(_PAHSLIDER2)</pin1name>
+<pin2name>_O9</pin2name>
+</relation>
 <aobject>
 <ID>_A0</ID>
-<x0>105</x0>
-<y0>69</y0>
+<x0>100</x0>
+<y0>100</y0>
 <width>280</width>
 <objectname>GUI</objectname>
 <description>GUIオブジェクト
@@ -536,6 +600,26 @@ XGUI x = new XGUI();
 <px>0</px>
 <py>90</py>
 </pin>
+<pin>
+<ID>_PHSLIDER2</ID>
+<x0>0</x0>
+<y0>166</y0>
+<width>200</width>
+<height>26</height>
+<text>HSLIDER2_created(SeekBar b)</text>
+<px>0</px>
+<py>108</py>
+</pin>
+<pin>
+<ID>_PAHSLIDER2</ID>
+<x0>0</x0>
+<y0>194</y0>
+<width>200</width>
+<height>26</height>
+<text>HSLIDER2_changed(int val)</text>
+<px>0</px>
+<py>126</py>
+</pin>
 <codeclip>
 <ID>_CXSTART</ID>
 <x0>0</x0>
@@ -567,33 +651,84 @@ BUTTON1 IBUTTON1;
  setOnClickListener(new Button.OnClickListener(){ public void onClick(View v) {BUTTON1_clicked();}} );
 }
 }
+HSLIDER2 IHSLIDER2;
+ class HSLIDER2 extends SeekBar{
+ HSLIDER2(){
+ super(ACTIVITY);
+ setBackgroundColor( Color.rgb( 238, 238, 238 ));
+ setProgress( 0 );
+ setMax( 10000 );
+ setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+ public void onStopTrackingTouch(SeekBar seekBar) {}
+ public void onStartTrackingTouch(SeekBar seekBar) {}
+ public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { HSLIDER2_changed( progress ); }
+ });
+ HSLIDER2_created( this );
+}
+}
  XGUI(){
  AbsoluteLayout layout=new AbsoluteLayout(ACTIVITY);
 layout.setBackgroundColor(Color.rgb( 247, 249, 165));
 ACTIVITY.setContentView(layout);
 ACTIVITY.setTitle(&quot;Text Reader&quot;);
  IT_AREA0 = new T_AREA0();
- IT_AREA0.setLayoutParams( new AbsoluteLayout.LayoutParams( 422,524,6,50 ) );
+ IT_AREA0.setLayoutParams( new AbsoluteLayout.LayoutParams( 427,474,6,116 ) );
  layout.addView( IT_AREA0 );
  IBUTTON1 = new BUTTON1();
- IBUTTON1.setLayoutParams( new AbsoluteLayout.LayoutParams( 270,39,39,2 ) );
+ IBUTTON1.setLayoutParams( new AbsoluteLayout.LayoutParams( 313,39,45,4 ) );
  layout.addView( IBUTTON1 );
+ IHSLIDER2 = new HSLIDER2();
+ IHSLIDER2.setLayoutParams( new AbsoluteLayout.LayoutParams( 429,63,5,50 ) );
+ layout.addView( IHSLIDER2 );
  GUI_created( layout );
 }
 }
 </codetext>
 </codeclip>
-<ID_maker>22</ID_maker>
-<height>112</height>
+<ID_maker>24</ID_maker>
+<height>148</height>
 <レイアウト>Text Reader
-536
-602
+506
+625
 247
 249
 165
 xxscale=1
-TEXTAREA;T_AREA0;null;6;50;422;524;51;51;51;255;255;255;Dialog;12;1;1;1;EditText;
-BUTTON;BUTTON1;exit;39;2;270;39;51;51;51;192;192;192;Dialog;14;null;0;0;1;0;1;Button;
+TEXTAREA;T_AREA0;null;6;116;427;474;51;51;51;255;255;255;Dialog;12;1;1;1;EditText;
+BUTTON;BUTTON1;exit;45;4;313;39;51;51;51;192;192;192;Dialog;14;null;0;0;1;0;1;Button;
+HSLIDER;HSLIDER2;0;10000;5;50;429;63;163;184;204;238;238;238;1;1;1;SeekBar;
 </レイアウト>
 </aobject>
+<operation>
+<ID>_O11</ID>
+<state1>_SINIT</state1>
+<state2>_SINIT</state2>
+<x0>451</x0>
+<y0>237</y0>
+<width>113</width>
+<height>45</height>
+<inconnectx0>0</inconnectx0>
+<inconnecty0>40</inconnecty0>
+<outconnectx0>0</outconnectx0>
+<outconnecty0>40</outconnecty0>
+<inpintext>in(SeekBar b)</inpintext>
+<inpinx0>1</inpinx0>
+<inpiny0>25</inpiny0>
+<inpinwidth>91</inpinwidth>
+<inpinheight>20</inpinheight>
+<outpintext>out()</outpintext>
+<outpinx0>90</outpinx0>
+<outpiny0>40</outpiny0>
+<outpinwidth>40</outpinwidth>
+<outpinheight>20</outpinheight>
+<inpinlinkcount>1</inpinlinkcount>
+<description></description>
+<codetext>seek = b;
+</codetext>
+</operation>
+<relation>
+<ID>_R12</ID>
+<pin1name>_A0(_PHSLIDER2)</pin1name>
+<pin2name>_O11</pin2name>
+</relation>
 </xobject>
