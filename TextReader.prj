@@ -194,6 +194,7 @@ public class HelloWorld extends Activity {
     try{
       BufferedWriter dd = new BufferedWriter(new FileWriter( new File( ap.home, &quot;data.txt&quot; ) ) );
       dd.write( ap.edit.getSelectionStart()+&quot;\n&quot; );
+      dd.write( ap.fname+&quot;\n&quot; );
       dd.close();
     } catch(Exception e ){}
   }
@@ -324,12 +325,13 @@ int main( int argc, char** argv ){
 <ID>_C2</ID>
 <x0>112</x0>
 <y0>7</y0>
-<width>171</width>
-<height>80</height>
+<width>169</width>
+<height>96</height>
 <codetext>EditText edit = null;
 int index = 0;
 int len = 0;
 File home = null;
+String fname = null;
 SeekBar seek = null;
 </codetext>
 </codeclip>
@@ -397,17 +399,19 @@ home = ACTIVITY.getFilesDir();
 try{
   BufferedReader dd = new BufferedReader(new FileReader( new File(home, &quot;data.txt&quot;) ) );
   index = Integer.parseInt(dd.readLine());
+  fname = dd.readLine();
   dd.close();
 } catch(Exception e ){ edit.setText(&quot;can not open init file\n&quot;); }
 
-  String fname = null, line = null;
+  String s = null, line = null;
   Intent intent = ACTIVITY.getIntent();
   Uri uri = intent.getData();
   if( uri == null ){
-    fname = intent.getStringExtra(&quot;PATH&quot;);
-    if( fname != null ){
+    s = intent.getStringExtra(&quot;PATH&quot;);
+    if( s != null ){
+      fname = s;
       try{
-        BufferedReader din = new BufferedReader( new FileReader( fname ) );
+        BufferedReader din = new BufferedReader( new FileReader( s ) );
         while( ( line = din.readLine() ) != null ){
           edit.append(line);
           edit.append(&quot;\n&quot;);
@@ -418,10 +422,25 @@ try{
         if( len &gt; 0 ) seek.setProgress(10000 * index / len );
       } catch(Exception e ){ edit.setText(&quot;can not open &quot;+ fname+&quot;\n&quot;); }
     }
+    else if( fname != null ) {
+      try {
+        URL url = new URL( fname  );
+        InputStream in = url.openStream();
+        BufferedReader din = new BufferedReader(new InputStreamReader(in));
+        while( ( line = din.readLine() ) != null ){
+          edit.append(line);
+          edit.append(&quot;\n&quot;);
+        }
+        din.close();
+        edit.setSelection(index);
+        len =  ((SpannableStringBuilder)edit.getText()).toString().length();
+        if( len &gt; 0 ) seek.setProgress(10000 * index / len );
+      } catch(Exception e ){ edit.setText( e+&quot;\n&quot;); }
+    }
   }
   else { 
     try {
-      URL url = new URL( uri.toString() );
+      URL url = new URL( fname = uri.toString() );
       InputStream in = url.openStream();
       BufferedReader din = new BufferedReader(new InputStreamReader(in));
       while( ( line = din.readLine() ) != null ){
@@ -511,8 +530,8 @@ edit.setSelection( index=( i * len /10000 ) );
 </relation>
 <aobject>
 <ID>_A0</ID>
-<x0>100</x0>
-<y0>100</y0>
+<x0>101</x0>
+<y0>118</y0>
 <width>280</width>
 <objectname>GUI</objectname>
 <description>GUIオブジェクト
