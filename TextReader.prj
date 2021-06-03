@@ -6,7 +6,7 @@
 <y0>0</y0>
 <width>200</width>
 <height>100</height>
-<ID_maker>13</ID_maker>
+<ID_maker>17</ID_maker>
 <objectname>TextReader</objectname>
 <description>新規のアプリケーション</description>
 <プロパティ>
@@ -333,6 +333,7 @@ int len = 0;
 File home = null;
 String fname = null;
 SeekBar seek = null;
+float size = 5;
 </codetext>
 </codeclip>
 <operation>
@@ -528,10 +529,42 @@ edit.setSelection( index=( i * len /10000 ) );
 <pin1name>_A0(_PAHSLIDER2)</pin1name>
 <pin2name>_O9</pin2name>
 </relation>
+<operation>
+<ID>_O11</ID>
+<state1>_SINIT</state1>
+<state2>_SINIT</state2>
+<x0>451</x0>
+<y0>237</y0>
+<width>113</width>
+<height>45</height>
+<inconnectx0>0</inconnectx0>
+<inconnecty0>40</inconnecty0>
+<outconnectx0>0</outconnectx0>
+<outconnecty0>40</outconnecty0>
+<inpintext>in(SeekBar b)</inpintext>
+<inpinx0>1</inpinx0>
+<inpiny0>25</inpiny0>
+<inpinwidth>91</inpinwidth>
+<inpinheight>20</inpinheight>
+<outpintext>out()</outpintext>
+<outpinx0>90</outpinx0>
+<outpiny0>40</outpiny0>
+<outpinwidth>40</outpinwidth>
+<outpinheight>20</outpinheight>
+<inpinlinkcount>1</inpinlinkcount>
+<description></description>
+<codetext>seek = b;
+</codetext>
+</operation>
+<relation>
+<ID>_R12</ID>
+<pin1name>_A0(_PHSLIDER2)</pin1name>
+<pin2name>_O11</pin2name>
+</relation>
 <aobject>
 <ID>_A0</ID>
-<x0>101</x0>
-<y0>118</y0>
+<x0>103</x0>
+<y0>106</y0>
 <width>280</width>
 <objectname>GUI</objectname>
 <description>GUIオブジェクト
@@ -639,6 +672,26 @@ XGUI x = new XGUI();
 <px>0</px>
 <py>126</py>
 </pin>
+<pin>
+<ID>_PAbig</ID>
+<x0>0</x0>
+<y0>222</y0>
+<width>200</width>
+<height>26</height>
+<text>big_clicked()</text>
+<px>0</px>
+<py>144</py>
+</pin>
+<pin>
+<ID>_PAsmall</ID>
+<x0>0</x0>
+<y0>250</y0>
+<width>200</width>
+<height>26</height>
+<text>small_clicked()</text>
+<px>0</px>
+<py>162</py>
+</pin>
 <codeclip>
 <ID>_CXSTART</ID>
 <x0>0</x0>
@@ -652,7 +705,7 @@ T_AREA0 IT_AREA0;
  super(ACTIVITY);
  setPadding(1, 1, 1, 1);
  setGravity(Gravity.LEFT | Gravity.TOP);
- setTextSize( 12f ); setTextColor( Color.rgb( 51, 51, 51 ));
+ setTextSize( 5f ); setTextColor( Color.rgb( 51, 51, 51 ));
  setBackgroundColor( Color.rgb( 255, 255, 255 ));
  setText( &quot;&quot; );
  T_AREA0_created( this );
@@ -666,7 +719,7 @@ BUTTON1 IBUTTON1;
  setPadding(1, 1, 1, 1);
  setTextSize( 14f ); setTextColor( Color.rgb( 51, 51, 51 ));
  setBackgroundColor( Color.rgb( 192, 192, 192 ));
- setText( &quot;exit&quot; );
+ setText( &quot;X&quot; );
  setOnClickListener(new Button.OnClickListener(){ public void onClick(View v) {BUTTON1_clicked();}} );
 }
 }
@@ -685,55 +738,87 @@ HSLIDER2 IHSLIDER2;
  HSLIDER2_created( this );
 }
 }
+big Ibig;
+ class big extends Button{
+ big(){
+ super(ACTIVITY);
+ setGravity(Gravity.CENTER|Gravity.CENTER);
+ setPadding(1, 1, 1, 1);
+ setTextSize( 14f ); setTextColor( Color.rgb( 51, 51, 51 ));
+ setBackgroundColor( Color.rgb( 192, 192, 192 ));
+ setText( &quot;+&quot; );
+ setOnClickListener(new Button.OnClickListener(){ public void onClick(View v) {big_clicked();}} );
+}
+}
+small Ismall;
+ class small extends Button{
+ small(){
+ super(ACTIVITY);
+ setGravity(Gravity.CENTER|Gravity.CENTER);
+ setPadding(1, 1, 1, 1);
+ setTextSize( 14f ); setTextColor( Color.rgb( 51, 51, 51 ));
+ setBackgroundColor( Color.rgb( 192, 192, 192 ));
+ setText( &quot;-&quot; );
+ setOnClickListener(new Button.OnClickListener(){ public void onClick(View v) {small_clicked();}} );
+}
+}
  XGUI(){
  AbsoluteLayout layout=new AbsoluteLayout(ACTIVITY);
 layout.setBackgroundColor(Color.rgb( 247, 249, 165));
 ACTIVITY.setContentView(layout);
 ACTIVITY.setTitle(&quot;Text Reader&quot;);
  IT_AREA0 = new T_AREA0();
- IT_AREA0.setLayoutParams( new AbsoluteLayout.LayoutParams( 427,474,6,116 ) );
+ IT_AREA0.setLayoutParams( new AbsoluteLayout.LayoutParams( 507,577,1,45 ) );
  layout.addView( IT_AREA0 );
  IBUTTON1 = new BUTTON1();
- IBUTTON1.setLayoutParams( new AbsoluteLayout.LayoutParams( 313,39,45,4 ) );
+ IBUTTON1.setLayoutParams( new AbsoluteLayout.LayoutParams( 64,47,437,0 ) );
  layout.addView( IBUTTON1 );
  IHSLIDER2 = new HSLIDER2();
- IHSLIDER2.setLayoutParams( new AbsoluteLayout.LayoutParams( 429,63,5,50 ) );
+ IHSLIDER2.setLayoutParams( new AbsoluteLayout.LayoutParams( 341,41,0,3 ) );
  layout.addView( IHSLIDER2 );
+ Ibig = new big();
+ Ibig.setLayoutParams( new AbsoluteLayout.LayoutParams( 40,41,346,1 ) );
+ layout.addView( Ibig );
+ Ismall = new small();
+ Ismall.setLayoutParams( new AbsoluteLayout.LayoutParams( 45,42,389,0 ) );
+ layout.addView( Ismall );
  GUI_created( layout );
 }
 }
 </codetext>
 </codeclip>
-<ID_maker>24</ID_maker>
-<height>148</height>
+<ID_maker>26</ID_maker>
+<height>184</height>
 <レイアウト>Text Reader
-506
-625
+535
+676
 247
 249
 165
 xxscale=1
-TEXTAREA;T_AREA0;null;6;116;427;474;51;51;51;255;255;255;Dialog;12;1;1;1;EditText;
-BUTTON;BUTTON1;exit;45;4;313;39;51;51;51;192;192;192;Dialog;14;null;0;0;1;0;1;Button;
-HSLIDER;HSLIDER2;0;10000;5;50;429;63;163;184;204;238;238;238;1;1;1;SeekBar;
+TEXTAREA;T_AREA0;null;1;45;507;577;51;51;51;255;255;255;Dialog;5;1;1;1;EditText;
+BUTTON;BUTTON1;X;437;0;64;47;51;51;51;192;192;192;Dialog;14;null;0;0;1;0;1;Button;
+HSLIDER;HSLIDER2;0;10000;0;3;341;41;163;184;204;238;238;238;1;1;1;SeekBar;
+BUTTON;big;+;346;1;40;41;51;51;51;192;192;192;Dialog;14;null;0;0;1;0;1;Button;
+BUTTON;small;-;389;0;45;42;51;51;51;192;192;192;Dialog;14;null;0;0;1;0;1;Button;
 </レイアウト>
 </aobject>
 <operation>
-<ID>_O11</ID>
+<ID>_O13</ID>
 <state1>_SINIT</state1>
 <state2>_SINIT</state2>
-<x0>451</x0>
-<y0>237</y0>
-<width>113</width>
-<height>45</height>
+<x0>460</x0>
+<y0>385</y0>
+<width>198</width>
+<height>94</height>
 <inconnectx0>0</inconnectx0>
 <inconnecty0>40</inconnecty0>
 <outconnectx0>0</outconnectx0>
 <outconnecty0>40</outconnecty0>
-<inpintext>in(SeekBar b)</inpintext>
-<inpinx0>1</inpinx0>
-<inpiny0>25</inpiny0>
-<inpinwidth>91</inpinwidth>
+<inpintext>in()</inpintext>
+<inpinx0>0</inpinx0>
+<inpiny0>74</inpiny0>
+<inpinwidth>40</inpinwidth>
 <inpinheight>20</inpinheight>
 <outpintext>out()</outpintext>
 <outpinx0>90</outpinx0>
@@ -742,12 +827,48 @@ HSLIDER;HSLIDER2;0;10000;5;50;429;63;163;184;204;238;238;238;1;1;1;SeekBar;
 <outpinheight>20</outpinheight>
 <inpinlinkcount>1</inpinlinkcount>
 <description></description>
-<codetext>seek = b;
+<codetext>size = size+1f;
+if( size &gt; 36f ) size = 36f;
+edit.setTextSize(size);
 </codetext>
 </operation>
 <relation>
-<ID>_R12</ID>
-<pin1name>_A0(_PHSLIDER2)</pin1name>
-<pin2name>_O11</pin2name>
+<ID>_R14</ID>
+<pin1name>_A0(_PAbig)</pin1name>
+<pin2name>_O13</pin2name>
+</relation>
+<operation>
+<ID>_O15</ID>
+<state1>_SINIT</state1>
+<state2>_SINIT</state2>
+<x0>462</x0>
+<y0>510</y0>
+<width>198</width>
+<height>94</height>
+<inconnectx0>0</inconnectx0>
+<inconnecty0>40</inconnecty0>
+<outconnectx0>0</outconnectx0>
+<outconnecty0>40</outconnecty0>
+<inpintext>in()</inpintext>
+<inpinx0>0</inpinx0>
+<inpiny0>74</inpiny0>
+<inpinwidth>40</inpinwidth>
+<inpinheight>20</inpinheight>
+<outpintext>out()</outpintext>
+<outpinx0>90</outpinx0>
+<outpiny0>40</outpiny0>
+<outpinwidth>40</outpinwidth>
+<outpinheight>20</outpinheight>
+<inpinlinkcount>1</inpinlinkcount>
+<description></description>
+<codetext>size = size - 1f;
+if( size &lt; 5f ) size= 5f;
+edit.setTextSize(size);
+</codetext>
+</operation>
+<relation>
+<ID>_R16</ID>
+<pin1name>_A0(_PAsmall)</pin1name>
+<pin2name>_O15</pin2name>
 </relation>
 </xobject>

@@ -9,13 +9,14 @@ ESファイルエクスプローラ等のファイル管理アプリでテキス
  マウスを接続してホイールを動かすとテキストをスクロールすることができます。
    
 ##### [起動画面]
+  ![enter image description here](https://imgur.com/RE7eqod.jpg)
   
-  ![enter image description here](https://imgur.com/nMGWfaA.jpg)
 ##### [ビルド]
   
 本プログラムをビルドするためには[ObjectEditor](https://github.com/kousoz80/ObjectEditor) が動作する環境が必要です。
   
   プロジェクトファイル"TextReader.prj"をObjectEditorで開いてコンパイルボタンをクリックすればコンパイルが始まります。
-  
+  ![enter image description here](https://imgur.com/VY1vG1X.jpg)
+
 
 
